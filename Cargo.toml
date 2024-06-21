@@ -1,0 +1,17 @@
+[package]
+name = "svctrackerapi"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reqwest = { version = "0.12.4", features = ["blocking", "rustls-tls", "json"] }
+tokio = { version = "1.38.0", features = ["full"] }
+chrono = { version = "0.4.38" }
+time = { version = "0.3.11", features = ["formatting"] }
+futures = { version = "0.3.30", features = ["thread-pool"] }
+serde = { version = "1.0.203", features = ["derive"] }
+warp = "0.3.7"
+parking_lot = "0.12.3"
+derive-new = "0.6.0"
+serde_json = "1.0.117"
+dotenv = "0.15.0"

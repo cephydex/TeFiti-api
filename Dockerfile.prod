@@ -1,0 +1,33 @@
+FROM rust:1.78 as build
+ENV APP svctrackerapi
+
+# create a new empty shell project
+RUN USER=root cargo new --bin app
+RUN apt-get update && apt install -y ca-certificates
+WORKDIR /app
+
+# copy over your manifests
+COPY ./Cargo.lock ./Cargo.toml ./
+
+# this build step will cache your dependencies
+RUN cargo build --release
+RUN rm src/*.rs
+
+# copy your source tree
+COPY ./src ./src
+
+# build for release
+RUN rm ./target/release/deps/${APP}*
+RUN cargo build --release
+
+# our final base
+FROM debian:bookworm-slim
+WORKDIR /app
+RUN apt-get update && apt install -y openssl
+
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build /app/target/release/${APP} /app/${APP}
+COPY .env /app/
+
+EXPOSE 3003
+CMD ["/app/svctrackerapi"]
