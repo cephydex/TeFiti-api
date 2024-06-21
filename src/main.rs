@@ -12,15 +12,21 @@ async fn main() {
     open_data_file().await;
     dotenv().ok();
 
-    let index2 = warp::get()
+    let index_v1 = warp::get()
         .and(warp::path("v1"))
+        .and(warp::path::end())
+        .and_then(routes::index_page);
+
+    let index_files = warp::get()
+        .and(warp::path("v1"))
+        .and(warp::path("files"))
         .and(warp::path::end())
         .and_then(routes::index_page);
 
     let hello = warp::path!("hello" / String)
         .map(|name| format!("hello {}", name));
 
-    let index1 = warp::get()
+    let index = warp::get()
         .and(warp::path::end())
         .and_then(routes::index_page);
 
@@ -41,8 +47,9 @@ async fn main() {
     let routes = hello
         .or(download_readme)
         .or(download_monitor)
-        .or(index1)
-        .or(index2)
+        .or(index)
+        .or(index_v1)
+        .or(index_files)
         .with(warp::cors().allow_any_origin());
 
     tokio::spawn({
@@ -53,7 +60,7 @@ async fn main() {
             // .run(([0, 0, 0, 0], 3003))
     });
 
-    // // let mut interval_timer = tokio::time::interval(chrono::Duration::seconds(20).to_std().unwrap());
+    // let mut interval_timer = tokio::time::interval(chrono::Duration::seconds(20).to_std().unwrap());
     let mut interval_timer = tokio::time::interval(chrono::Duration::minutes(7).to_std().unwrap());
     loop {
         interval_timer.tick().await;
@@ -62,7 +69,7 @@ async fn main() {
 
 }
 
-use std::{env, fs::{File, OpenOptions}, io::Write};
+use std::{env, fs::{File, OpenOptions}, io::{ErrorKind, Write}};
 
 use tokio::task::JoinSet;
 
@@ -141,7 +148,6 @@ async fn append_respitem_to_file(content: &Vec<RespItem>, cur_date: &str) {
 
     // check for empty string
     if content_str.len() > 0 {
-        // eprintln!("String length is: {}", content_str.len());
         let data_string: String = format!("{} | {}", cur_date, content_str);
 
         // newline
@@ -166,15 +172,37 @@ fn proc_data_msg(content: &Vec<RespItem>) -> String {
     content_str
 }
 
+// async fn append_data_to_file(path: &str) -> File {
+//     let data_file = OpenOptions::new()
+//         .append(true)
+//         .open(path)
+//         .expect("cannot open file");
+
+//     data_file
+// }
+
 async fn append_data_to_file(path: &str) -> File {
-    let data_file = OpenOptions::new()
+    let tf = OpenOptions::new()
         .append(true)
-        .open(path)
-        .expect("cannot open file");
+        .open(path);
 
-    data_file
+    // let mut tf = match tf {
+    //     Ok(file) => file,
+    //     Err(e) => return open_data_file().await,
+    // };
+
+    let tf = match tf {
+        Ok(file) => file,
+        Err(e) => {
+            if e.kind() == ErrorKind::NotFound {
+                println!("Err:: Oops, the file doesn't exist: {:?}", e);
+            }
+            return open_data_file().await;
+        }
+    };
+
+    tf
 }
-
 
 // async fn open_file() {
 //     let data_result = File::open("monitoring.json");

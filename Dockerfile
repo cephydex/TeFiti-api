@@ -7,4 +7,4 @@ COPY . .
 RUN cargo build --release
 
 # Run the binary
-CMD ["/app/target/release/reqtest"]
+CMD ["/app/target/release/svctrackerapi"]

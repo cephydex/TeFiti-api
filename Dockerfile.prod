@@ -1,5 +1,5 @@
 FROM rust:1.78 as build
-ENV APP svctrackerapi
+ENV APP tefiti_api
 
 # create a new empty shell project
 RUN USER=root cargo new --bin app
@@ -30,4 +30,4 @@ COPY --from=build /app/target/release/${APP} /app/${APP}
 COPY .env /app/
 
 EXPOSE 3003
-CMD ["/app/svctrackerapi"]
+CMD ["/app/tefiti_api"]

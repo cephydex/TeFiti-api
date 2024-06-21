@@ -2,7 +2,8 @@
 
 services:
   app:
-    container_name: svctracker-10
+    container_name: tefiti-svc
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile.prod
@@ -11,4 +12,4 @@ services:
     # volumes:
     #   - ".:/app"
     ports:
-      - 7045:3003
+      - 7044:3003

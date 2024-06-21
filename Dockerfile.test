@@ -1,5 +1,5 @@
 FROM rust:latest as builder
-ENV APP svctracker
+ENV APP svctrackerapi
 
 WORKDIR /usr/src/app
 COPY . .

@@ -1348,23 +1348,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "81cdd64d312baedb58e21336b31bc043b77e01cc99033ce76ef539f78e965ebc"
 
 [[package]]
-name = "svctrackerapi"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "derive-new",
- "dotenv",
- "futures",
- "parking_lot",
- "reqwest",
- "serde",
- "serde_json",
- "time",
- "tokio",
- "warp",
-]
-
-[[package]]
 name = "syn"
 version = "2.0.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1400,6 +1383,23 @@ checksum = "a75fb188eb626b924683e3b95e3a48e63551fcfb51949de2f06a9d91dbee93c9"
 dependencies = [
  "core-foundation-sys",
  "libc",
+]
+
+[[package]]
+name = "tefiti_api"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "derive-new",
+ "dotenv",
+ "futures",
+ "parking_lot",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "time",
+ "tokio",
+ "warp",
 ]
 
 [[package]]
